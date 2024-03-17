@@ -1,0 +1,3 @@
+frequency: 5.0
+scan_topic: /burger/scan
+human_topic: /pedsim_agents/semantic/pedestrian

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <node pkg="human_tracking_particle_filter" type="human_tracking_particle_filter_node" name="human_tracking_particle_filter" output="screen">
+    <rosparam command="load" file="$(find human_tracking_particle_filter)/config/params.yaml" />
+  </node>
+
+</launch>
