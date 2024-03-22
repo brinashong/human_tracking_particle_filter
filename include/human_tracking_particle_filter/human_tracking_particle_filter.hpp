@@ -1,5 +1,5 @@
-#ifndef HUMAN_TRACKING_PARTICLE_FILTER
-#define HUMAN_TRACKING_PARTICLE_FILTER
+#ifndef HUMAN_TRACKING_PARTICLE_FILTER_HPP
+#define HUMAN_TRACKING_PARTICLE_FILTER_HPP
 
 #include <vector>
 #include <random>
@@ -8,20 +8,12 @@
 #include <sensor_msgs/LaserScan.h>
 #include <dynamic_reconfigure/server.h>
 
+#include "human_tracking_particle_filter/struct_defs.hpp"
 #include "human_tracking_particle_filter/particleFilterConfig.h"
 #include "pedsim_msgs/SemanticData.h"
 
 class HumanTrackingParticleFilter
 {
-  struct Pose
-  {
-    Pose(const double x, const double y)
-      : x{x}, y{y}
-    {}
-
-    double x, y;
-  };
-
   public:
     HumanTrackingParticleFilter(ros::NodeHandle &nh, ros::NodeHandle &pnh);
     ~HumanTrackingParticleFilter() {}
@@ -47,7 +39,7 @@ class HumanTrackingParticleFilter
     double std_dev_;
 
     // variables
-    std::vector<Pose> humans_;
+    std::vector<HumanData> humans_;
 };
 
-#endif /* HUMAN_TRACKING_PARTICLE_FILTER */
+#endif /* HUMAN_TRACKING_PARTICLE_FILTER_HPP */
