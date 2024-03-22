@@ -9,6 +9,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   pedsim_msgs
+  grid_map_ros
+  grid_map_visualization
 )
 
 ## Uncomment this if the package has a setup.py. This macro ensures

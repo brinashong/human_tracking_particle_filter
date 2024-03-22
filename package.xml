@@ -53,6 +53,8 @@
   <depend>roscpp</depend>
   <depend>sensor_msgs</depend>
   <depend>pedsim_msgs</depend>
+  <depend>grid_map_ros</depend>
+  <depend>grid_map_visualization</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
