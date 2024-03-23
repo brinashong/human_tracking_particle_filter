@@ -3,7 +3,8 @@
 
 #include <ros/ros.h>
 #include <grid_map_ros/grid_map_ros.hpp>
-#include <pedsim_msgs/SemanticData.h>
+#include <human_tracking_particle_filter/struct_defs.hpp>
+#include <human_tracking_particle_filter/const_defs.hpp>
 
 #include <memory>
 
@@ -13,8 +14,16 @@ public:
   GridMapInterface(ros::NodeHandle &nh, ros::NodeHandle &pnh);
   ~GridMapInterface();
 
-  void insertSemanticData(pedsim_msgs::SemanticData ha);
+  /**
+   * \brief Insert human data into grip map
+   * \attention This function assumes the human pose are in the same frame as grid map
+   */
+  void insertHumanData(std::vector<HumanData> hd);
+  void resetAllGridMapData();
+  void resetObstacleGridMapData();
+  void resetProbabilityGridMapData();
   std::shared_ptr<grid_map::GridMap> getGridMap();
+  void publishGridMap();
 
 private:
   // ROS publisher

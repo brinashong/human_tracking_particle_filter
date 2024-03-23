@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(human_tracking_particle_filter)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   dynamic_reconfigure
@@ -129,7 +128,10 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_node src/human_tracking_particle_filter.cpp)
+add_executable(${PROJECT_NAME}_node
+ src/human_tracking_particle_filter.cpp
+ src/grid_map_interface.cpp
+)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
