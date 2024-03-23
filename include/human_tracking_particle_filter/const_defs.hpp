@@ -2,7 +2,7 @@
 #define CONST_DEFS_HPP
 
 // GRID MAP LAYER NAME
-inline constexpr const char* OBSTALE_LAYER {"obstacle_layer"};
+inline constexpr const char* OBSTACLE_LAYER {"obstacle_layer"};
 inline constexpr const char* PROBABILITY_LAYER = {"probability_layer"};
 
 // GRID MAP VALUE

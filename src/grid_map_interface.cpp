@@ -23,7 +23,7 @@ GridMapInterface::GridMapInterface(ros::NodeHandle &nh, ros::NodeHandle &pnh)
   map_ptr_->add({PROBABILITY_LAYER}, 0.0);
   // Add obstacle layer, value range from 0.0 - 100.0
   // This layer will be translated to the local costmap
-  map_ptr_->add({OBSTALE_LAYER}, 0.0);
+  map_ptr_->add({OBSTACLE_LAYER}, 0.0);
 }
 
 GridMapInterface::~GridMapInterface()
@@ -37,7 +37,7 @@ void GridMapInterface::insertHumanData(std::vector<HumanData> hd)
   {
     if (grid_map::Index idx; map_ptr_->getIndex({pt.x, pt.y}, idx))
     {
-      map_ptr_->at(OBSTALE_LAYER, idx) = LETHAL_OBSTACLE;
+      map_ptr_->at(OBSTACLE_LAYER, idx) = LETHAL_OBSTACLE;
       map_ptr_->at(PROBABILITY_LAYER, idx) = 1.0;
     }
   }
@@ -51,7 +51,7 @@ void GridMapInterface::resetAllGridMapData()
 
 void GridMapInterface::resetObstacleGridMapData()
 {
-  (*map_ptr_)[OBSTALE_LAYER].setZero();
+  (*map_ptr_)[OBSTACLE_LAYER].setZero();
 }
 
 void GridMapInterface::resetProbabilityGridMapData()

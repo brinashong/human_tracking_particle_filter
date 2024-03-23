@@ -15,8 +15,8 @@ public:
   ~GridMapInterface();
 
   /**
-   * \brief Insert human data into grip map
-   * \attention This function assumes the human pose are in the same frame as grid map
+   * \brief Insert human data into grid map
+   * \attention This function assumes the human poses are in the same frame as grid map
    */
   void insertHumanData(std::vector<HumanData> hd);
   void resetAllGridMapData();
