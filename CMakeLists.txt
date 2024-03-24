@@ -4,6 +4,7 @@ project(human_tracking_particle_filter)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   dynamic_reconfigure
@@ -11,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   pedsim_msgs
   grid_map_ros
   grid_map_visualization
+  costmap_2d
 )
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -124,13 +126,21 @@ target_link_libraries(${PROJECT_NAME}_core
   ${catkin_LIBRARIES}
 )
 
-add_library(${PROJECT_NAME}_costmap
-  src/costmap_2d_plugin.cpp
-)
-target_link_libraries(${PROJECT_NAME}_costmap
-  ${PROJECT_NAME}_core
-  ${catkin_LIBRARIES}
-)
+# costmap 2d plugin not working :(
+# add_library(${PROJECT_NAME}_costmap
+#   src/costmap_2d_plugin.cpp
+# )
+# target_link_libraries(${PROJECT_NAME}_costmap
+#   ${PROJECT_NAME}_core
+#   ${catkin_LIBRARIES}
+# )
+
+# add_library(single_obstacle_layer2
+#   src/costmap_2d_plugin.cpp
+# )
+# target_link_libraries(single_obstacle_layer2
+#   ${catkin_LIBRARIES}
+# )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -182,11 +192,16 @@ install(TARGETS ${PROJECT_NAME}_node
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
-install(TARGETS ${PROJECT_NAME}_core ${PROJECT_NAME}_costmap
+install(TARGETS ${PROJECT_NAME}_core # ${PROJECT_NAME}_costmap
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
 )
+
+# Install plugin.xml
+# install(FILES plugin.xml
+#         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+# )
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/

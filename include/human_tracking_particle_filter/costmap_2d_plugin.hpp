@@ -21,19 +21,19 @@ namespace costmap_plugin
     HumanTrackingParticleFilterLayer();
     virtual ~HumanTrackingParticleFilterLayer();
 
-    void onInitialize() override;
-    void updateBounds(double robot_x,
-                              double robot_y,
-                              double robot_yaw,
-                              double *min_x,
-                              double *min_y,
-                              double *max_x,
-                              double *max_y) override;
-    void updateCosts(costmap_2d::Costmap2D &master_grid,
-                             int min_i,
-                             int min_j,
-                             int max_i,
-                             int max_j) override;
+    virtual void onInitialize() override;
+    virtual void updateBounds(double robot_x,
+                      double robot_y,
+                      double robot_yaw,
+                      double *min_x,
+                      double *min_y,
+                      double *max_x,
+                      double *max_y) override;
+    virtual void updateCosts(costmap_2d::Costmap2D &master_grid,
+                     int min_i,
+                     int min_j,
+                     int max_i,
+                     int max_j) override;
   private:
     ros::NodeHandle pnh_;
     ros::NodeHandle nh_;

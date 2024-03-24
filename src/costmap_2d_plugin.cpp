@@ -24,22 +24,22 @@ namespace costmap_plugin
   }
 
   void HumanTrackingParticleFilterLayer::updateBounds(double robot_x,
-      double robot_y,
-      double robot_yaw,
-      double *min_x,
-      double *min_y,
-      double *max_x,
-      double *max_y)
+                                                      double robot_y,
+                                                      double robot_yaw,
+                                                      double *min_x,
+                                                      double *min_y,
+                                                      double *max_x,
+                                                      double *max_y)
   {
-    ROS_INFO_STREAM("Human Tracking Particle Filter Layer Update Bounds!");
+    ROS_INFO("Human Tracking Particle Filter Layer Update Bounds!");
   }
 
-  void HumanTrackingParticleFilterLayerupdateCosts(costmap_2d::Costmap2D &master_grid,
-      int min_i,
-      int min_j,
-      int max_i,
-      int max_j)
+  void HumanTrackingParticleFilterLayer::updateCosts(costmap_2d::Costmap2D &master_grid,
+                                                     int min_i,
+                                                     int min_j,
+                                                     int max_i,
+                                                     int max_j)
   {
-    ROS_INFO_STREAM("Human Tracking Particle Filter Layer Update Costs!");
+    ROS_INFO("Human Tracking Particle Filter Layer Update Costs!");
   }
-} // costmap_plugin
+} // costmap_2d_plugin
