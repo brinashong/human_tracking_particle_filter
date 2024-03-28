@@ -3,7 +3,8 @@
 #include "human_tracking_particle_filter/grid_map_interface.hpp"
 #include "human_tracking_particle_filter/particleFilterConfig.h"
 
-HumanTrackingParticleFilter::HumanTrackingParticleFilter(ros::NodeHandle &nh, ros::NodeHandle &pnh)
+HumanTrackingParticleFilter::HumanTrackingParticleFilter(ros::NodeHandle &nh, ros::NodeHandle &pnh) 
+  : tf2_listener_(tf2_buffer_)
 {
   // Initialize dynamic reconfigure server
   dyn_srv_ = std::make_shared<dynamic_reconfigure::Server<human_tracking_particle_filter::particleFilterConfig>>();
@@ -12,6 +13,8 @@ HumanTrackingParticleFilter::HumanTrackingParticleFilter(ros::NodeHandle &nh, ro
   pnh.param<double>("frequency", frequency_, 1.0);
   pnh.param<std::string>("scan_topic", scan_topic_, "/scan");
   pnh.param<std::string>("human_topic", human_topic_, "/human");
+  pnh.param<std::string>("human_frame", human_frame_, "map");
+  pnh.param<std::string>("robot_frame", robot_frame_, "base_link");
   pnh.param<bool>("add_noise", add_noise_, false);
   pnh.param<double>("mean", mean_, 0.0);
   pnh.param<double>("std_dev", std_dev_, 1.0);
@@ -43,11 +46,25 @@ void HumanTrackingParticleFilter::humanPositionCallback(const pedsim_msgs::Seman
 {
   ROS_INFO_THROTTLE(3.0, "Human position received!");
 
+  // get transform from human to robot frame
+  geometry_msgs::TransformStamped transform_stamped;
+  try
+  {
+    transform_stamped = tf2_buffer_.lookupTransform(robot_frame_, human_frame_, ros::Time(0));
+  }
+  catch (tf2::TransformException &ex)
+  {
+    ROS_WARN_STREAM(ex.what());
+  }
+
   // store the human positions
   humans_.clear();
+  geometry_msgs::Point new_p;
   for (const auto &p : input->points)
   {
-    humans_.emplace_back(p.location.x, p.location.y);
+    // apply transform
+    tf2::doTransform(p.location, new_p, transform_stamped);
+    humans_.emplace_back(new_p.x, new_p.y);
   }
 
   // apply Gaussian noise 

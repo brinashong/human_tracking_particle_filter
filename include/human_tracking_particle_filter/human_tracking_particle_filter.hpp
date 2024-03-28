@@ -8,6 +8,9 @@
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
 #include <dynamic_reconfigure/server.h>
+#include <tf2/utils.h>
+#include <tf2_ros/transform_listener.h>
+#include <geometry_msgs/TransformStamped.h>
 
 #include "human_tracking_particle_filter/grid_map_interface.hpp"
 #include "human_tracking_particle_filter/struct_defs.hpp"
@@ -41,9 +44,14 @@ class HumanTrackingParticleFilter
     double frequency_;
     std::string scan_topic_;
     std::string human_topic_;
+    std::string human_frame_;
+    std::string robot_frame_;
     bool add_noise_;
     double mean_;
     double std_dev_;
+
+    tf2_ros::Buffer tf2_buffer_;
+    tf2_ros::TransformListener tf2_listener_;
 
     // grid map interface pointer
     std::unique_ptr<GridMapInterface> grid_map_interface_ptr_;

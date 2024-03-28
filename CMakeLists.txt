@@ -6,9 +6,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  tf2
+  tf2_ros
   dynamic_reconfigure
   sensor_msgs
   pedsim_msgs
+  geometry_msgs
   grid_map_ros
   grid_map_visualization
 )
