@@ -1,7 +1,0 @@
-<library path="lib/libhuman_tracking_particle_filter_costmap">
-  <class type="costmap_plugin::HumanTrackingParticleFilterLayer" base_class_type="costmap_2d::Layer">
-    <description>
-      This is a costmap_2d plugin for human tracking particle filter.
-    </description>
-  </class>
-</library>

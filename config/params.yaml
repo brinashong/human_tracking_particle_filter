@@ -1,6 +1,0 @@
-frequency: 5.0
-scan_topic: /burger/scan
-human_topic: /pedsim_agents/semantic/pedestrian
-add_noise: true
-mean: 0.0
-std_dev: 1.0
