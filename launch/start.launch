@@ -5,4 +5,6 @@
     <rosparam command="load" file="$(find human_tracking_particle_filter)/config/params.yaml" />
   </node>
 
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find human_tracking_particle_filter)/rviz/debug.rviz"/> -->
+
 </launch>

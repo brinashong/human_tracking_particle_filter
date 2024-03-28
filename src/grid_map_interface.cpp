@@ -41,6 +41,7 @@ void GridMapInterface::insertHumanData(std::vector<HumanData> hd)
       map_ptr_->at(PROBABILITY_LAYER, idx) = 1.0;
     }
   }
+  publishGridMap();
 }
 
 void GridMapInterface::resetAllGridMapData()

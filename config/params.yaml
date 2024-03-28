@@ -4,3 +4,5 @@ human_topic: /pedsim_agents/semantic/pedestrian
 add_noise: true
 mean: 0.0
 std_dev: 1.0
+
+num_particles: 100

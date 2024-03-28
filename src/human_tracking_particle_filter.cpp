@@ -1,5 +1,6 @@
 #include <memory>
 #include "human_tracking_particle_filter/human_tracking_particle_filter.hpp"
+#include "human_tracking_particle_filter/grid_map_interface.hpp"
 #include "human_tracking_particle_filter/particleFilterConfig.h"
 
 HumanTrackingParticleFilter::HumanTrackingParticleFilter(ros::NodeHandle &nh, ros::NodeHandle &pnh)
@@ -15,8 +16,14 @@ HumanTrackingParticleFilter::HumanTrackingParticleFilter(ros::NodeHandle &nh, ro
   pnh.param<double>("mean", mean_, 0.0);
   pnh.param<double>("std_dev", std_dev_, 1.0);
 
+  pnh.param<int>("num_particles", num_particles_, 100);
+
   scan_sub_ = nh.subscribe<sensor_msgs::LaserScan>(scan_topic_, 1, [this](const sensor_msgs::LaserScan::ConstPtr& input){ this->laserScanCallback(input); });
   human_sub_ = nh.subscribe<pedsim_msgs::SemanticData>(human_topic_, 1, [this](const pedsim_msgs::SemanticData::ConstPtr& input){ this->humanPositionCallback(input); });
+
+  grid_map_interface_ptr_ = std::make_unique<GridMapInterface>(nh, pnh);
+
+  double init = 1.0 / num_particles_;
 }
 
 void HumanTrackingParticleFilter::reconfigureCB(human_tracking_particle_filter::particleFilterConfig &config)
@@ -29,12 +36,12 @@ void HumanTrackingParticleFilter::reconfigureCB(human_tracking_particle_filter::
 
 void HumanTrackingParticleFilter::laserScanCallback(const sensor_msgs::LaserScan::ConstPtr &input)
 {
-  ROS_INFO("Scan received!");
+  ROS_INFO_THROTTLE(3.0, "Scan received!");
 }
 
 void HumanTrackingParticleFilter::humanPositionCallback(const pedsim_msgs::SemanticData::ConstPtr &input)
 {
-  ROS_INFO("Human position received!");
+  ROS_INFO_THROTTLE(3.0, "Human position received!");
 
   // store the human positions
   humans_.clear();
@@ -55,6 +62,9 @@ void HumanTrackingParticleFilter::humanPositionCallback(const pedsim_msgs::Seman
       p.y += gaussian(rand_gen);
     }
   }
+
+  grid_map_interface_ptr_->resetAllGridMapData();
+  grid_map_interface_ptr_->insertHumanData(humans_);
 }
 
 int main(int argc, char** argv)

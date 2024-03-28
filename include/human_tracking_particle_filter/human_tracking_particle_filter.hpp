@@ -1,6 +1,7 @@
 #ifndef HUMAN_TRACKING_PARTICLE_FILTER_HPP
 #define HUMAN_TRACKING_PARTICLE_FILTER_HPP
 
+#include <algorithm>
 #include <vector>
 #include <random>
 
@@ -8,6 +9,7 @@
 #include <sensor_msgs/LaserScan.h>
 #include <dynamic_reconfigure/server.h>
 
+#include "human_tracking_particle_filter/grid_map_interface.hpp"
 #include "human_tracking_particle_filter/struct_defs.hpp"
 #include "human_tracking_particle_filter/particleFilterConfig.h"
 #include "pedsim_msgs/SemanticData.h"
@@ -23,6 +25,11 @@ class HumanTrackingParticleFilter
     void humanPositionCallback(const pedsim_msgs::SemanticData::ConstPtr &input);
 
   private:
+    // bool update();
+    // void prediction();
+    // void measurement();
+    // void resampling();
+
     // ROS subscribers
     ros::Subscriber scan_sub_;
     ros::Subscriber human_sub_;
@@ -38,8 +45,12 @@ class HumanTrackingParticleFilter
     double mean_;
     double std_dev_;
 
+    // grid map interface pointer
+    std::unique_ptr<GridMapInterface> grid_map_interface_ptr_;
+
     // variables
     std::vector<HumanData> humans_;
+    int num_particles_;
 };
 
 #endif /* HUMAN_TRACKING_PARTICLE_FILTER_HPP */
