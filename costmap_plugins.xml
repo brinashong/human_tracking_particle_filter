@@ -1,0 +1,9 @@
+<class_libraries>
+
+<library path="lib/libhuman_tracking_particle_filter">
+    <class type="costmap_plugin::HTPFLayer" base_class_type="costmap_2d::Layer">
+      <description>HTPF Layer</description>
+    </class>
+  </library>
+
+</class_libraries>

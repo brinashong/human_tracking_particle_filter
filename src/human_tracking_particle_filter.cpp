@@ -1,4 +1,3 @@
-#include <memory>
 #include "human_tracking_particle_filter/human_tracking_particle_filter.hpp"
 #include "human_tracking_particle_filter/grid_map_interface.hpp"
 #include "human_tracking_particle_filter/particleFilterConfig.h"
@@ -82,16 +81,4 @@ void HumanTrackingParticleFilter::humanPositionCallback(const pedsim_msgs::Seman
 
   grid_map_interface_ptr_->resetAllGridMapData();
   grid_map_interface_ptr_->insertHumanData(humans_);
-}
-
-int main(int argc, char** argv)
-{
-  ros::init(argc, argv, "human_tracking_particle_filter");
-  ros::NodeHandle nh, pnh("~");
-
-  std::shared_ptr<HumanTrackingParticleFilter> obj = std::make_shared<HumanTrackingParticleFilter>(nh, pnh);
-
-  ros::spin();
-
-  return 0;
 }

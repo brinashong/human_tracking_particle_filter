@@ -2,7 +2,7 @@ frequency: 5.0
 scan_topic: /burger/scan
 human_topic: /pedsim_agents/semantic/pedestrian
 human_frame: map
-robot_frame: base_link
+robot_frame: map #burger/base_footprint
 
 add_noise: true
 mean: 0.0
