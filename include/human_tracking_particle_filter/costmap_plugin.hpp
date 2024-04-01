@@ -1,5 +1,5 @@
-#ifndef single_robot_front_obstacle_layer_H_
-#define single_robot_front_obstacle_layer_H_
+#ifndef HUMAN_TRACKING_PARTICLE_FILTER_COSTMAP_PLUGIN_HPP
+#define HUMAN_TRACKING_PARTICLE_FILTER_COSTMAP_PLUGIN_HPP
 
 #include <ros/ros.h>
 #include <costmap_2d/layer.h>
@@ -13,7 +13,7 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2/utils.h>
 
-#include "human_tracking_particle_filter/human_tracking_particle_filter.hpp"
+#include "human_tracking_particle_filter/grid_map_interface.hpp"
 
 namespace costmap_plugin
 {
@@ -47,8 +47,14 @@ namespace costmap_plugin
     tf2_ros::Buffer tf_buffer_;
     tf2_ros::TransformListener tf_listerner_;
 
-    std::unique_ptr<HumanTrackingParticleFilter> htpf_ptr_;
+    // std::unique_ptr<HumanTrackingParticleFilter> htpf_ptr_;
+    std::unique_ptr<GridMapInterface> gm_ptr_;
+    bool is_first_time_, debug_;
+    // debug params
+    double mark_x_, mark_y_;
+    double gaussian_center_x_, gaussian_center_y_, amplitude_, covar_x_, covar_y_;
+    double angle_, factor_, cutoff_, buffer_;
   };
 } // namespace costmap_plugin
 
-#endif
+#endif /* HUMAN_TRACKING_PARTICLE_FILTER_COSTMAP_PLUGIN_HPP */
