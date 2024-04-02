@@ -32,7 +32,7 @@ GridMapInterface::~GridMapInterface()
 {
 }
 
-void GridMapInterface::insertHumanData(std::vector<HumanData> hd)
+void GridMapInterface::insertHumanData(std::vector<HumanData> hd, const double patch)
 {
   // Insert human data to map
   for (auto const pt : hd)
@@ -41,7 +41,7 @@ void GridMapInterface::insertHumanData(std::vector<HumanData> hd)
     {
       // Add human
       double base = GridMapInterface::getRadius(1.0, 100.0, 0.1, 0.1);
-      double point = buffer_ + GridMapInterface::getRadius(1.0, 100.0, 0.1 * pt.vx, 0.1);
+      double point = /* buffer_ */ patch + GridMapInterface::getRadius(1.0, 100.0, 0.1 * pt.vx, 0.1);
       unsigned int width = std::max(1, static_cast<int>((base + point) / map_resolution_));
       unsigned int height = width;
 

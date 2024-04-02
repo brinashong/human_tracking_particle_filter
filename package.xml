@@ -42,7 +42,7 @@
   <depend>costmap_2d</depend>
   <depend>grid_map_ros</depend>
   <depend>interactive_markers</depend>
-  <!-- <depend>human_tracking_particle_filter</depend> -->
+  <depend>visualization_msgs</depend>
 
   <export>
     <costmap_2d plugin="${prefix}/costmap_plugins.xml"/>

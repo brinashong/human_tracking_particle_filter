@@ -15,7 +15,9 @@
 #include "human_tracking_particle_filter/grid_map_interface.hpp"
 #include "human_tracking_particle_filter/struct_defs.hpp"
 #include "human_tracking_particle_filter/particleFilterConfig.h"
-#include "pedsim_msgs/SemanticData.h"
+#include <pedsim_msgs/SemanticData.h>
+#include <pedsim_msgs/AgentStates.h>
+#include <visualization_msgs/MarkerArray.h>
 
 class HumanTrackingParticleFilter
 {
@@ -26,6 +28,8 @@ class HumanTrackingParticleFilter
     void reconfigureCB(human_tracking_particle_filter::particleFilterConfig &config);
     void laserScanCallback(const sensor_msgs::LaserScan::ConstPtr &input);
     void humanPositionCallback(const pedsim_msgs::SemanticData::ConstPtr &input);
+    void agentStatesCallback(const pedsim_msgs::AgentStates::ConstPtr &input);
+    void publishHumanMarker();
 
   private:
     // bool update();
@@ -36,6 +40,8 @@ class HumanTrackingParticleFilter
     // ROS subscribers
     ros::Subscriber scan_sub_;
     ros::Subscriber human_sub_;
+    ros::Subscriber agent_state_sub_;
+    ros::Publisher human_markers_pub_;
 
     // dynamic reconfigure
     std::shared_ptr<dynamic_reconfigure::Server<human_tracking_particle_filter::particleFilterConfig>> dyn_srv_;
@@ -44,6 +50,7 @@ class HumanTrackingParticleFilter
     double frequency_;
     std::string scan_topic_;
     std::string human_topic_;
+    std::string agent_state_topic_;
     std::string human_frame_;
     std::string robot_frame_;
     bool add_noise_;
@@ -59,6 +66,8 @@ class HumanTrackingParticleFilter
     // variables
     std::vector<HumanData> humans_;
     int num_particles_;
+    double factor_;
+    bool debug_;
 };
 
 #endif /* HUMAN_TRACKING_PARTICLE_FILTER_HPP */

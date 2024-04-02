@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   # Grid Map Features
   grid_map_ros
   # Interactive Marker Features
+  visualization_msgs
   interactive_markers
   # HTPF Features
   # human_tracking_particle_filter

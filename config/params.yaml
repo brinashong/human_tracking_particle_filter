@@ -1,11 +1,13 @@
 frequency: 5.0
 scan_topic: /burger/scan
 human_topic: /pedsim_agents/semantic/pedestrian
+agent_state_topic: /pedsim_simulator/simulated_agents
 human_frame: map
 robot_frame: map #burger/base_footprint
 
 add_noise: true
 mean: 0.0
 std_dev: 1.0
+factor: 20.0 # factor for velocity
 
 num_particles: 100
