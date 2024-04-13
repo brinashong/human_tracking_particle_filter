@@ -19,7 +19,7 @@ public:
    * \brief Insert human data into grid map
    * \attention This function assumes the human poses are in the same frame as grid map
    */
-  void insertHumanData(std::vector<HumanData> hd, const double patch = 0.0);
+  void insertHumanData(std::unordered_map<int, HumanData> hd, const double patch = 0.0);
   void createGridMap(const std::string &frame_id, const double map_size_x, const double map_size_y, const double map_resolution, const double map_origin_x = 0.0, const double map_origin_y = 0.0);
   void resetAllGridMapData();
   void resetObstacleGridMapData();

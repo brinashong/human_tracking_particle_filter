@@ -178,7 +178,7 @@ namespace costmap_plugin
     //   }
     // }
 
-    gm_ptr_->insertHumanData({{gaussian_center_x_, gaussian_center_y_, factor_, 0.0, angle_, 0.0, 0.0, 0.0, 1.0}});
+    // gm_ptr_->insertHumanData({{gaussian_center_x_, gaussian_center_y_, factor_, 0.0, angle_, 0.0, 0.0, 0.0, 1.0}});
     gm_ptr_->publishGridMap();
 
     ROS_INFO_STREAM_COND(debug_, "Human Tracking Particle Filter Layer Update Costs!");

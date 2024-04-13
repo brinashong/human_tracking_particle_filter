@@ -1,13 +1,22 @@
 frequency: 5.0
 scan_topic: /burger/scan
-human_topic: /pedsim_agents/semantic/pedestrian
-agent_state_topic: /pedsim_simulator/simulated_agents
-human_frame: map
+# human_topic: /pedsim_agents/semantic/pedestrian
+detection_topic: /object_tracking_msg
+# agent_state_topic: /pedsim_simulator/simulated_agents
+human_frame: base_link
 robot_frame: map #burger/base_footprint
+missing_threshold: 10 # counts
+
+## grid map
+map_frame_id: base_link
+map_size_x: 10.0
+map_size_y: 10.0
+map_origin_x: 0.0
+map_origin_y: 0.0
 
 add_noise: true
 mean: 0.0
-std_dev: 1.0
+std_dev: 0.1
 factor: 20.0 # factor for velocity
 
-num_particles: 100
+num_particles: 50

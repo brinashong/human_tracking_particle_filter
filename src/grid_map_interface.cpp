@@ -32,10 +32,10 @@ GridMapInterface::~GridMapInterface()
 {
 }
 
-void GridMapInterface::insertHumanData(std::vector<HumanData> hd, const double patch)
+void GridMapInterface::insertHumanData(std::unordered_map<int, HumanData> hd, const double patch)
 {
   // Insert human data to map
-  for (auto const pt : hd)
+  for (auto const &[id, pt] : hd)
   {
     if (grid_map::Index idx; map_ptr_->getIndex({pt.x, pt.y}, idx))
     {

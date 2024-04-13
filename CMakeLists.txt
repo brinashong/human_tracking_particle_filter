@@ -19,6 +19,8 @@ find_package(catkin REQUIRED COMPONENTS
   # Interactive Marker Features
   visualization_msgs
   interactive_markers
+  object_detector_ros_messages
+  tf2_geometry_msgs
   # HTPF Features
   # human_tracking_particle_filter
 )
