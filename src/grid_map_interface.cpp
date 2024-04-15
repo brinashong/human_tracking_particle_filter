@@ -70,7 +70,7 @@ void GridMapInterface::insertHumanData(std::unordered_map<int, HumanData> hd, co
                   ox - i * map_resolution_, oy - j * map_resolution_,
                   cx, cy,
                   100.0,
-                  pt.vx * 0.1, 0.1,
+                  (pt.vx > 0.0) ? pt.vx * 0.1 : 0.1 , 0.1,
                   pt.ang
                   );
             }
