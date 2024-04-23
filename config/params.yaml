@@ -1,3 +1,4 @@
+debug: false
 frequency: 5.0
 scan_topic: /burger/scan
 # human_topic: /pedsim_agents/semantic/pedestrian
@@ -5,7 +6,7 @@ detection_topic: /object_tracking_msg
 # agent_state_topic: /pedsim_simulator/simulated_agents
 human_frame: base_link
 robot_frame: map #burger/base_footprint
-missing_threshold: 10 # counts
+missing_threshold: 30 # counts
 
 ## grid map
 map_frame_id: base_link
@@ -19,4 +20,4 @@ mean: 0.0
 std_dev: 0.1
 factor: 20.0 # factor for velocity
 
-num_particles: 50
+num_particles: 100

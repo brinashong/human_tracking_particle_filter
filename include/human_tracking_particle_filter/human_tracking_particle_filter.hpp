@@ -30,7 +30,7 @@ class HumanTrackingParticleFilter
 {
   public:
     HumanTrackingParticleFilter(ros::NodeHandle &nh, ros::NodeHandle &pnh);
-    ~HumanTrackingParticleFilter() {}
+    ~HumanTrackingParticleFilter();
 
     void mainTimerCallback(const ros::TimerEvent& event);
     void reconfigureCB(human_tracking_particle_filter::particleFilterConfig &config);
@@ -70,6 +70,7 @@ class HumanTrackingParticleFilter
     bool add_noise_;
     double mean_;
     double std_dev_;
+    int missing_threshold_;
 
     tf2_ros::Buffer tf2_buffer_;
     tf2_ros::TransformListener tf2_listener_;

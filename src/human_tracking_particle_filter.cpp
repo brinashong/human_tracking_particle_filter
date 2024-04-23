@@ -23,6 +23,8 @@ HumanTrackingParticleFilter::HumanTrackingParticleFilter(ros::NodeHandle &nh, ro
   pnh.param<double>("factor", factor_, 20.0);
 
   pnh.param<int>("num_particles", num_particles_, 10);
+  pnh.param<int>("missing_threshold", missing_threshold_, 10);
+  pnh.param<bool>("debug", debug_, false);
 
   main_timer_ = nh.createTimer(ros::Duration(1 / frequency_), &HumanTrackingParticleFilter::mainTimerCallback, this);
 
@@ -44,6 +46,16 @@ HumanTrackingParticleFilter::HumanTrackingParticleFilter(ros::NodeHandle &nh, ro
   mean_yt_file_.open(path + "/plots/mean_yt.txt");
 }
 
+HumanTrackingParticleFilter::~HumanTrackingParticleFilter()
+{
+  ground_xt_file_.close();
+  ground_yt_file_.close();
+  noisy_xt_file_.close();
+  noisy_yt_file_.close();
+  mean_xt_file_.close();
+  mean_yt_file_.close();
+}
+
 void HumanTrackingParticleFilter::reconfigureCB(human_tracking_particle_filter::particleFilterConfig &config)
 {
   this->debug_ = config.debug;
@@ -56,7 +68,10 @@ void HumanTrackingParticleFilter::reconfigureCB(human_tracking_particle_filter::
 
 void HumanTrackingParticleFilter::laserScanCallback(const sensor_msgs::LaserScan::ConstPtr &input)
 {
-  ROS_INFO_THROTTLE(3.0, "Scan received!");
+  if (debug_)
+  {
+    ROS_INFO_THROTTLE(3.0, "Scan received!");
+  }
 }
 
 // void HumanTrackingParticleFilter::humanPositionCallback(const pedsim_msgs::SemanticData::ConstPtr &input)
@@ -105,7 +120,10 @@ void HumanTrackingParticleFilter::laserScanCallback(const sensor_msgs::LaserScan
 
 void HumanTrackingParticleFilter::detectionCallback(const object_detector_ros_messages::ObjectDetectMsg::ConstPtr &input)
 {
-  ROS_INFO("Detection received!");
+  if (debug_)
+  {
+    ROS_INFO("Detection received!");
+  }
 
   latest_detection_ = *input;
   // if (grid_map_interface_ptr_)
@@ -247,31 +265,58 @@ void HumanTrackingParticleFilter::mainTimerCallback(const ros::TimerEvent& event
   {
     grid_map_interface_ptr_->resetAllGridMapData();
 
+    mean_xt_file_ << time_;
+    mean_yt_file_ << time_;
+
     // compute weighted mean of particle positions
-    Particle total;
+    // and obtain the particle with the largest weight
+    Particle total; // , lwp;
     for (const auto& [id, particles] : particles_)
     {
-      total.x = 0.0;
-      total.y = 0.0;
-      total.w = 0.0;
+      total.x = 0.0; // = lwp.x 
+      total.y = 0.0; // = lwp.y 
+      total.w = 0.0; // = lwp.w 
 
       for (const auto &p : particles)
       {
         total.x += p.x * p.w;
         total.y += p.y * p.w;
         total.w += p.w;
+        // if (p.w > lwp.w)
+        // {
+        //   lwp.x = p.x;
+        //   lwp.y = p.y;
+        //   lwp.w = p.w;
+        // }
       }
+
+      // int confidence_count = 0;
+      // for (const auto &p : particles)
+      // {
+      //   double dist = (p.x - lwp.x) * (p.x - lwp.x) + (p.y - lwp.y) * (p.y - lwp.y); 
+      //   if (dist <= std_dev_ / 4.0)
+      //   {
+      //     ++confidence_count;
+      //   }
+      // }
 
       weighted_means[id].x = total.x / total.w;
       weighted_means[id].y = total.y / total.w;
+      weighted_means[id].confidence = 1.0; //static_cast<double>(confidence_count) / static_cast<double>(particles.size());
+
+      if (debug_)
+      {
+        ROS_INFO_STREAM("Tracker for human " << id << " is active!");
+        std::cout << "largest px: " << weighted_means[id].x << ", py: " << weighted_means[id].y << ", confidence: " << weighted_means[id].confidence << std::endl;
+      }
 
       // store mean data
-      if (mean_xt_file_.is_open())
-      {
-        mean_xt_file_ << time_ << " " << std::fixed << std::setprecision(3) << weighted_means[id].x << std::endl;
-        mean_yt_file_ << time_ << " " << std::fixed << std::setprecision(3) << weighted_means[id].y << std::endl;
-      }
+      mean_xt_file_ << " " << std::fixed << std::setprecision(3) << weighted_means[id].x;
+      mean_yt_file_ << " " << std::fixed << std::setprecision(3) << weighted_means[id].y;
     }
+
+    mean_xt_file_ << std::endl;
+    mean_yt_file_ << std::endl;
 
     grid_map_interface_ptr_->insertHumanData(weighted_means);
 
@@ -282,7 +327,7 @@ void HumanTrackingParticleFilter::mainTimerCallback(const ros::TimerEvent& event
 
 void HumanTrackingParticleFilter::predict()
 {
-  ROS_WARN("Predicting particles...");
+  // ROS_WARN("Predicting particles...");
   for (const auto &[id, h] : humans_)
   {
     // create a tracker for new detection
@@ -297,26 +342,26 @@ void HumanTrackingParticleFilter::predict()
     for (int index = 0; index < num_particles_; index++)
     {
       // propagating the particles using constant velocity model, adding noise
-      // particles_[h.id][index].x += (h.vx + gaussian(rand_gen)) / frequency_;
-      // particles_[h.id][index].y += (h.vy + gaussian(rand_gen)) / frequency_;
-      particles_[h.id][index].x += h.vx / frequency_;
-      particles_[h.id][index].y += h.vy / frequency_;
+      particles_[h.id][index].x += (h.vx + gaussian(rand_gen)) / frequency_;
+      particles_[h.id][index].y += (h.vy + gaussian(rand_gen)) / frequency_;
+      // particles_[h.id][index].x += h.vx / frequency_;
+      // particles_[h.id][index].y += h.vy / frequency_;
     }
   }
 
-  for (const auto &[id, particles] : particles_)
-  {
-    ROS_INFO_STREAM("Tracker for human " << id << " is active!");
-    for (const auto &p : particles)
-    {
-      std::cout << "px: " << p.x << ", py: " << p.y << ", pw: " << p.w << std::endl;
-    }
-  }
+  // for (const auto &[id, particles] : particles_)
+  // {
+  //   ROS_INFO_STREAM("Tracker for human " << id << " is active!");
+  //   for (const auto &p : particles)
+  //   {
+  //     std::cout << "px: " << p.x << ", py: " << p.y << ", pw: " << p.w << std::endl;
+  //   }
+  // }
 }
 
 void HumanTrackingParticleFilter::measure()
 {
-  ROS_WARN("Measuring latest human positions...");
+  // ROS_WARN("Measuring latest human positions...");
 
   humans_.clear();
 
@@ -324,6 +369,11 @@ void HumanTrackingParticleFilter::measure()
   std::random_device rd;
   std::mt19937 rand_gen(rd());
   std::normal_distribution<double> gaussian(mean_, std_dev_);
+
+  ground_xt_file_ << time_;
+  ground_yt_file_ << time_;
+  noisy_xt_file_ << time_;
+  noisy_yt_file_ << time_;
 
   // Convert to human data format
   for (const auto &in : latest_detection_.ObjArray)
@@ -343,11 +393,8 @@ void HumanTrackingParticleFilter::measure()
     double y = in.ObjectPose.position.y;
 
     // store ground truth
-    if (ground_xt_file_.is_open())
-    {
-      ground_xt_file_ << time_ << " " << std::fixed << std::setprecision(3) << x << std::endl;
-      ground_yt_file_ << time_ << " " << std::fixed << std::setprecision(3) << y << std::endl;
-    }
+    ground_xt_file_ << " " << std::fixed << std::setprecision(3) << x;
+    ground_yt_file_ << " " << std::fixed << std::setprecision(3) << y;
 
     // apply Gaussian noise 
     if (add_noise_)
@@ -357,11 +404,8 @@ void HumanTrackingParticleFilter::measure()
     }
 
     // store noisy data
-    if (noisy_xt_file_.is_open())
-    {
-      noisy_xt_file_ << time_ << " " << std::fixed << std::setprecision(3) << x << std::endl;
-      noisy_yt_file_ << time_ << " " << std::fixed << std::setprecision(3) << y << std::endl;
-    }
+    noisy_xt_file_ << " " << std::fixed << std::setprecision(3) << x;
+    noisy_yt_file_ << " " << std::fixed << std::setprecision(3) << y;
 
     humans_[in.object_idx] = {
       in.object_idx,
@@ -373,14 +417,20 @@ void HumanTrackingParticleFilter::measure()
       msg.x,
       msg.y,
       msg.z,
-      msg.w
+      msg.w,
+      0.01
     };
   }
 
-  if (debug_)
-  {
+  ground_xt_file_ << std::endl;
+  ground_yt_file_ << std::endl;
+  noisy_xt_file_ << std::endl;
+  noisy_yt_file_ << std::endl;
+
+  // if (debug_)
+  // {
     publishHumanMarker();
-  }
+  // }
 
   // loop through each tracker
   double sum_w = 0.0;
@@ -391,7 +441,7 @@ void HumanTrackingParticleFilter::measure()
     // deal with missing detections
     if (humans_.find(id) == humans_.end())
     {
-      if (missing_count_[id]++ > 3)
+      if (missing_count_[id]++ > missing_threshold_)
       {
         id_to_erase.insert(id);
       }
@@ -463,7 +513,7 @@ void HumanTrackingParticleFilter::resample()
 
 void HumanTrackingParticleFilter::initializeTracker(const HumanData &h)
 {
-  ROS_WARN_STREAM("Initializing tracker for human " << h.id);
+  // ROS_WARN_STREAM("Initializing tracker for human " << h.id);
 
   // uniform distribution of particles within some radius around detection
   particles_[h.id] = {};
@@ -482,7 +532,7 @@ void HumanTrackingParticleFilter::initializeTracker(const HumanData &h)
     p.w = 1.0 / num_particles_;
     particles_[h.id].push_back(p);
     
-    std::cout << "ori x: " << h.x << ", y: " << h.y << ", new x: " << p.x << ", new y: " << p.y << std::endl;
+    // std::cout << "ori x: " << h.x << ", y: " << h.y << ", new x: " << p.x << ", new y: " << p.y << std::endl;
   }
 
   missing_count_[h.id] = 0;

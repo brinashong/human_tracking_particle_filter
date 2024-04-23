@@ -37,11 +37,14 @@ void GridMapInterface::insertHumanData(std::unordered_map<int, HumanData> hd, co
   // Insert human data to map
   for (auto const &[id, pt] : hd)
   {
+    // std::cout << "c value: " << pt.confidence << std::endl;
     if (grid_map::Index idx; map_ptr_->getIndex({pt.x, pt.y}, idx))
     {
       // Add human
-      double base = GridMapInterface::getRadius(1.0, 100.0, 0.1, 0.1);
-      double point = /* buffer_ */ patch + GridMapInterface::getRadius(1.0, 100.0, 0.1 * pt.vx, 0.1);
+      // double base = GridMapInterface::getRadius(0.01, pt.confidence * 1.0, 0.1, 0.1);
+      double base = GridMapInterface::getRadius(0.01, 1.0, 0.1, 0.1);
+      // double point = /* buffer_ */ patch + GridMapInterface::getRadius(0.01, pt.confidence * 1.0, 0.1 * pt.vx, 0.1);
+      double point = /* buffer_ */ patch + GridMapInterface::getRadius(0.01, 1.0, 0.1 * fabs(pt.vx * 30.0), 0.1);
       unsigned int width = std::max(1, static_cast<int>((base + point) / map_resolution_));
       unsigned int height = width;
 
@@ -69,8 +72,9 @@ void GridMapInterface::insertHumanData(std::unordered_map<int, HumanData> hd, co
               map_ptr_->at(PROBABILITY_LAYER, {sm_idx.x() + i, sm_idx.y() + j}) = GridMapInterface::gaussian(
                   ox - i * map_resolution_, oy - j * map_resolution_,
                   cx, cy,
-                  100.0,
-                  (pt.vx > 0.0) ? pt.vx * 0.1 : 0.1 , 0.1,
+                  // pt.confidence + 1.0,
+                  1.0,
+                  (std::fabs(pt.vx * 30.0) > 0.0) ? std::fabs(pt.vx * 30.0) * 0.1 : 0.1 , 0.1,
                   pt.ang
                   );
             }
@@ -79,7 +83,8 @@ void GridMapInterface::insertHumanData(std::unordered_map<int, HumanData> hd, co
               map_ptr_->at(PROBABILITY_LAYER, {sm_idx.x() + i, sm_idx.y() + j}) = GridMapInterface::gaussian(
                   ox - i * map_resolution_, oy - j * map_resolution_,
                   cx, cy,
-                  100.0,
+                  // pt.confidence + 1.0,
+                  1.0,
                   0.1, 0.1,
                   pt.ang
                   );

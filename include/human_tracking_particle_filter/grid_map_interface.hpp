@@ -35,10 +35,10 @@ public:
      * @param covar_y y direction covariance
      * @return double
      */
-    static inline double const getRadius(const int cutoff, const int amplitude, const double covar_x, const double covar_y)
+    static inline double const getRadius(const double cutoff, const double amplitude, const double covar_x, const double covar_y)
     {
       return (covar_x >= covar_y) ?
-        std::sqrt(-2 * covar_x * std::log((double)cutoff / amplitude)) : std::sqrt(-2 * covar_y * std::log((double)cutoff / amplitude));
+        std::sqrt(-2 * covar_x * std::log(cutoff / amplitude)) : std::sqrt(-2 * covar_y * std::log(cutoff / amplitude));
     }
 
     /**

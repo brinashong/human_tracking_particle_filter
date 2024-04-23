@@ -79,14 +79,18 @@ namespace costmap_plugin
           0.0,
           0.0
         );
-      ROS_INFO_STREAM(
-          "\nFrame: " << "base_link"/* layered_costmap_->getCostmap(). */
-          << "\n Size x: " << layered_costmap_->getCostmap()->getSizeInMetersX()
-          << "\n Size y: " << layered_costmap_->getCostmap()->getSizeInMetersY()
-          << "\n Resolution: " << layered_costmap_->getCostmap()->getResolution()
-          << "\n Origin x: " << layered_costmap_->getCostmap()->getOriginX()
-          << "\n Origin y: " << layered_costmap_->getCostmap()->getOriginY()
-          );
+
+      if (debug_)
+      {
+        ROS_INFO_STREAM(
+            "\nFrame: " << "base_link"/* layered_costmap_->getCostmap(). */
+            << "\n Size x: " << layered_costmap_->getCostmap()->getSizeInMetersX()
+            << "\n Size y: " << layered_costmap_->getCostmap()->getSizeInMetersY()
+            << "\n Resolution: " << layered_costmap_->getCostmap()->getResolution()
+            << "\n Origin x: " << layered_costmap_->getCostmap()->getOriginX()
+            << "\n Origin y: " << layered_costmap_->getCostmap()->getOriginY()
+            );
+      }
       is_first_time_ = false;
     }
 
